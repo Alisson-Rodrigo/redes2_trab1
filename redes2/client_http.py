@@ -1,11 +1,23 @@
 import socket
 import sys
+import hashlib
 
 # =============================
 # CONFIGURAÇÕES
 # =============================
 SERVER_IP = "54.99.0.10"  # IP do container servidor
 PORT = 8080
+
+# Matrícula e Nome para gerar X-Custom-ID
+MATRICULA = "20219015499"
+NOME = "Alisson Rodrigo"
+
+def gerar_custom_id(matricula, nome):
+    """Gera o hash MD5 da matrícula e nome"""
+    texto = f"{matricula} {nome}"
+    return hashlib.md5(texto.encode()).hexdigest()
+
+CUSTOM_ID = gerar_custom_id(MATRICULA, NOME)
 
 # Método HTTP recebido como argumento
 # Exemplo: python3 client_http.py POST
@@ -20,12 +32,13 @@ if METHOD in ["POST", "PUT"]:
 else:
     body = ""
 
-# Cabeçalhos da requisição
+# Cabeçalhos da requisição COM X-Custom-ID
 request = (
     f"{METHOD} / HTTP/1.1\r\n"
     f"Host: servidor_http\r\n"
     "User-Agent: DockerClient/1.0\r\n"
     "Accept: */*\r\n"
+    f"X-Custom-ID: {CUSTOM_ID}\r\n"  # ✅ ADICIONADO
     "Connection: close\r\n"
 )
 
@@ -41,11 +54,13 @@ if body:
 # =============================
 # ENVIA A REQUISIÇÃO
 # =============================
+print(f"[CLIENTE] X-Custom-ID gerado: {CUSTOM_ID}")
+print(f"[CLIENTE] Enviando requisição {METHOD} para {SERVER_IP}:{PORT}")
+
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.connect((SERVER_IP, PORT))
     s.sendall(request.encode())
 
     response = s.recv(4096).decode()
-    print(f"[CLIENTE] Requisição {METHOD} enviada para {SERVER_IP}:{PORT}")
     print("\n[RESPOSTA DO SERVIDOR]")
     print(response)
