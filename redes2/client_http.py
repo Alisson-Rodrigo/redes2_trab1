@@ -6,8 +6,7 @@ import hashlib
 # CONFIGURAÇÕES
 # =============================
 SERVER_IP = "54.99.0.10"  # IP do container servidor
-PORT = 8080
-
+PORT = 80 
 # Matrícula e Nome para gerar X-Custom-ID
 MATRICULA = "20219015499"
 NOME = "Alisson Rodrigo"

@@ -5,8 +5,7 @@ import socket
 # CONFIGURAÇÕES
 # ============================================
 HOST = "0.0.0.0"
-PORT = 8080
-
+PORT = 80  
 # Matrícula e nome para o hash
 MATRICULA = "20219015499"
 NOME = "Alisson Rodrigo"

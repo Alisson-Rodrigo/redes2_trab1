@@ -8,8 +8,7 @@ import time
 # CONFIGURAÇÕES
 # =============================
 SERVER_IP = "54.99.0.10"  # IP do container servidor
-PORT = 8080
-
+PORT = 80 
 MATRICULA = "20219015499"
 NOME = "Alisson Rodrigo"
 

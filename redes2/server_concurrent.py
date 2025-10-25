@@ -3,8 +3,7 @@ import socket
 import threading
 
 HOST = "0.0.0.0"
-PORT = 8080
-
+PORT = 80 
 MATRICULA = "20219015499"
 NOME = "Alisson Rodrigo"
 

@@ -15,7 +15,7 @@ if len(sys.argv) < 3:
     sys.exit(1)
 
 SERVER_IP = sys.argv[1]  # ex: 54.99.0.10
-PORT = 8080
+PORT = 80 
 TIPO_SERVIDOR = sys.argv[2]  # "sequencial" ou "concorrente"
 NUM_TESTES = int(sys.argv[3]) if len(sys.argv) > 3 else 10
 RESULTS_FILE = "/app/results.csv"

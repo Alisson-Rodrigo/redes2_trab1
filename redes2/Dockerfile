@@ -28,7 +28,7 @@ COPY index.html /app/
 RUN chmod +x /app/run_tests.sh
 
 # Expõe portas dos serviços
-EXPOSE 8080 8081
+EXPOSE 80 8081
 
 # Comando padrão (mantém container ativo)
 CMD ["tail", "-f", "/dev/null"]
