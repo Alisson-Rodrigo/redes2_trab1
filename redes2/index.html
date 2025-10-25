@@ -181,10 +181,6 @@
             border-bottom: 1px solid rgba(148, 163, 184, 0.1);
         }
 
-        .card-icon {
-            font-size: 1.8rem;
-        }
-
         .card-title {
             font-size: 1.5rem;
             font-weight: 600;
@@ -408,7 +404,6 @@
             <h1>HTTP Test Dashboard</h1>
         </header>
 
-
         <div class="grid">
             <div class="card">
                 <div class="card-header">
@@ -473,10 +468,11 @@
         </div>
 
         <footer>
-            © 2025 HTTP Test Dashboard — Desenvolvido por Alisson Rodrigo
+            © 2025 HTTP Test Dashboard – Desenvolvido por Alisson Rodrigo
         </footer>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script>
         const SERVERS = {
             seq: "http://localhost:8080",
@@ -500,12 +496,9 @@
             statusText.textContent = text;
         }
 
-        async function sha1Hex(str) {
-            const buf = new TextEncoder().encode(str);
-            const hash = await crypto.subtle.digest("SHA-1", buf);
-            return Array.from(new Uint8Array(hash))
-                .map(b => b.toString(16).padStart(2, "0"))
-                .join("");
+        // ✅ MUDANÇA CRÍTICA: Usar MD5 em vez de SHA-1
+        function md5Hex(str) {
+            return CryptoJS.MD5(str).toString();
         }
 
         document.getElementById("sendOnce").onclick = async () => {
@@ -520,11 +513,13 @@
                 return;
             }
 
-            const xcid = await sha1Hex(`${matricula} ${nome}`);
+            // ✅ Gera MD5 em vez de SHA-1
+            const xcid = md5Hex(`${matricula} ${nome}`);
             const url = SERVERS[serverType];
             const serverName = serverType === 'seq' ? 'Sequencial' : 'Concorrente';
 
             logln(`➡️  Enviando ${method} para servidor ${serverName}...`);
+            logln(`🔐 X-Custom-ID: ${xcid}`);
             updateStatus('warning', 'Enviando requisição...', 'Enviando');
             respBox.textContent = 'Aguardando resposta do servidor...';
 
@@ -544,8 +539,14 @@
                 const statusLine = `HTTP ${response.status} ${response.statusText}`;
 
                 respBox.textContent = `${statusLine} | Tempo: ${elapsed}s\n${'─'.repeat(50)}\n\n${body}`;
-                updateStatus('success', `Requisição concluída em ${elapsed}s`, 'Sucesso');
-                logln(`✅ ${method} concluído em ${elapsed}s — Status: ${response.status}`);
+
+                if (response.status === 200) {
+                    updateStatus('success', `Requisição concluída em ${elapsed}s`, 'Sucesso');
+                    logln(`✅ ${method} concluído em ${elapsed}s – Status: ${response.status}`);
+                } else {
+                    updateStatus('error', `Erro ${response.status}`, 'Falha');
+                    logln(`⚠️ ${method} retornou status ${response.status}`);
+                }
 
             } catch (error) {
                 const elapsed = ((performance.now() - startTime) / 1000).toFixed(3);
