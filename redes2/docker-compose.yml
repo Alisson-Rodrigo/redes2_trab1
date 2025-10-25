@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  # Servidor Sequencial
+  servidor_sequencial:
+    build: .
+    container_name: servidor_sequencial
+    networks:
+      rede_custom:
+        ipv4_address: 54.99.0.10
+    ports:
+      - "8080:8080"
+    command: python3 /app/server_seq.py
+    volumes:
+      - ./results:/app/results
+
+  # Servidor Concorrente
+  servidor_concorrente:
+    build: .
+    container_name: servidor_concorrente
+    networks:
+      rede_custom:
+        ipv4_address: 54.99.0.11
+    ports:
+      - "8082:8080"
+    command: python3 /app/server_concurrent.py
+    volumes:
+      - ./results:/app/results
+
+  # Cliente com interface web
+  cliente:
+    build: .
+    container_name: cliente
+    networks:
+      rede_custom:
+        ipv4_address: 54.99.0.20
+    depends_on:
+      - servidor_sequencial
+      - servidor_concorrente
+    volumes:
+      - ./results:/app/results
+      - ./index.html:/app/index.html
+    ports:
+      - "8081:8081"   # Painel web acessível no host
+    stdin_open: true
+    tty: true
+    command: python3 -m http.server 8081 --directory /app
+
+networks:
+  rede_custom:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 54.99.0.0/16
+          gateway: 54.99.0.1
