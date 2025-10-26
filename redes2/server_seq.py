@@ -125,4 +125,4 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
             )
 
             conn.sendall(resposta.encode())
-            print(f"[SERVIDOR] Resposta 200 OK enviada para {addr} - Método: {metodo}")SSS
+            print(f"[SERVIDOR] Resposta 200 OK enviada para {addr} - Método: {metodo}")
