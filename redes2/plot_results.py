@@ -23,9 +23,7 @@ largura = 0.35
 
 fig, ax = plt.subplots(1, 2, figsize=(10, 4))
 
-# -------------------
-# 1️⃣ Tempo médio
-# -------------------
+
 for i, servidor in enumerate(servidores):
     valores = [medias[j] for j in range(len(medias)) if tipos[j] == servidor]
     ax[0].bar(x + i * largura, valores, largura, label=servidor, alpha=0.8)
@@ -36,9 +34,7 @@ ax[0].set_ylabel("Tempo (s)")
 ax[0].legend()
 ax[0].grid(axis="y", linestyle="--", alpha=0.7)
 
-# -------------------
-# 2️⃣ Throughput
-# -------------------
+
 for i, servidor in enumerate(servidores):
     valores = [throughput[j]
                for j in range(len(throughput)) if tipos[j] == servidor]

@@ -18,7 +18,6 @@ def extrair_headers(data):
     headers = {}
     lines = data.split('\r\n')
     
-    # Pula a primeira linha (request line)
     for line in lines[1:]:
         if not line or line == '\r\n':
             break
@@ -56,10 +55,8 @@ def handle_client(conn, addr):
 
         print(f"[REQUISIÇÃO DE {addr}]")
 
-        # Identifica o método HTTP
         metodo = data.split(" ")[0].upper() if data else "UNKNOWN"
 
-        # Resposta para pré-flight (CORS)
         if metodo == "OPTIONS":
             resposta = (
                 "HTTP/1.1 204 No Content\r\n"
@@ -72,14 +69,12 @@ def handle_client(conn, addr):
             print(f"[SERVIDOR] Resposta OPTIONS enviada para {addr}")
             return
 
-        # ✅ VALIDAÇÃO DO X-Custom-ID
         headers = extrair_headers(data)
         valido, mensagem = validar_custom_id(headers, CUSTOM_ID)
         
         print(f"[VALIDAÇÃO {addr}] {mensagem}")
         
         if not valido:
-            # Resposta 401 Unauthorized se X-Custom-ID inválido
             corpo = f"Erro de autenticação: {mensagem}\n"
             resposta = (
                 "HTTP/1.1 401 Unauthorized\r\n"
@@ -95,7 +90,6 @@ def handle_client(conn, addr):
             print(f"[SERVIDOR] Resposta 401 enviada para {addr} - {mensagem}")
             return
 
-        # Corpo da resposta para requisições válidas
         thread_info = f"Thread: {threading.current_thread().name}"
         if metodo == "GET":
             corpo = f"Requisição GET recebida de {addr}\nX-Custom-ID validado com sucesso!\n{thread_info}\n"
@@ -108,7 +102,6 @@ def handle_client(conn, addr):
         else:
             corpo = f"Método {metodo} não suportado.\n{thread_info}\n"
 
-        # Resposta HTTP 200 OK com cabeçalhos CORS
         resposta = (
             "HTTP/1.1 200 OK\r\n"
             "Content-Type: text/plain; charset=utf-8\r\n"
@@ -132,9 +125,7 @@ def handle_client(conn, addr):
         print(f"[SERVIDOR] Conexão com {addr} encerrada")
 
 
-# =========================
-# SERVIDOR PRINCIPAL
-# =========================
+
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
     server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     server.bind((HOST, PORT))
@@ -146,5 +137,5 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
         conn, addr = server.accept()
         thread = threading.Thread(target=handle_client, args=(conn, addr), daemon=True)
         thread.start()
-        active = threading.active_count() - 1  # Subtrai thread principal
+        active = threading.active_count() - 1  
         print(f"[SERVIDOR] Threads ativas: {active}")

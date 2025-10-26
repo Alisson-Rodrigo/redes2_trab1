@@ -1,17 +1,14 @@
 #!/bin/bash
 
-# Script para executar todos os testes automaticamente
 
 echo "=================================================="
 echo "   INICIANDO TESTES DE DESEMPENHO"
 echo "=================================================="
 echo ""
 
-# Aguarda os servidores iniciarem
 echo "⏳ Aguardando servidores iniciarem..."
 sleep 5
 
-# Remove resultados anteriores se existirem
 if [ -f "/app/results/results.csv" ]; then
     rm /app/results/results.csv
     echo "🗑️  Arquivo de resultados anterior removido"
@@ -36,7 +33,7 @@ echo "=================================================="
 python3 /app/plot_results.py
 
 echo ""
-echo "✅ TESTES CONCLUÍDOS!"
-echo "📊 Resultados salvos em: /app/results.csv"
-echo "📈 Gráfico salvo em: /app/graph.png"
+echo "TESTES CONCLUÍDOS!"
+echo "Resultados salvos em: /app/results.csv"
+echo "Gráfico salvo em: /app/graph.png"
 echo ""

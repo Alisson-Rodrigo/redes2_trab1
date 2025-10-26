@@ -9,19 +9,19 @@ echo ""
 
 mkdir -p results
 
-echo "🧹 Limpando ambiente anterior..."
+echo " Limpando ambiente anterior..."
 docker-compose down -v 2>/dev/null
 echo ""
 
-echo "🔨 Construindo imagens Docker..."
+echo " Construindo imagens Docker..."
 docker-compose build || { echo "❌ Erro ao construir as imagens!"; exit 1; }
 echo ""
 
-echo "🚀 Iniciando containers..."
+echo " Iniciando containers..."
 docker-compose up -d || { echo "❌ Erro ao iniciar os containers!"; exit 1; }
 echo ""
 
-echo "⏳ Aguardando containers estabilizarem (10 segundos)..."
+echo " Aguardando containers estabilizarem (10 segundos)..."
 sleep 10
 echo ""
 
@@ -40,12 +40,12 @@ echo "=================================================="
 echo ""
 
 docker exec cliente bash -lc "
-echo '⏳ Aguardando servidores iniciarem...'
+echo ' Aguardando servidores iniciarem...'
 sleep 5
 
 if [ -f '/app/results/results.csv' ]; then
     rm /app/results/results.csv
-    echo '🗑️  Arquivo de resultados anterior removido'
+    echo '  Arquivo de resultados anterior removido'
 fi
 
 echo ''
@@ -67,22 +67,22 @@ echo '=================================================='
 python3 /app/plot_results.py
 
 echo ''
-echo '✅ TESTES CONCLUÍDOS!'
-echo '📊 Resultados salvos em: /app/results/results.csv'
-echo '📈 Gráfico salvo em: /app/results/graph.png'
+echo ' TESTES CONCLUÍDOS!'
+echo ' Resultados salvos em: /app/results/results.csv'
+echo ' Gráfico salvo em: /app/results/graph.png'
 "
 
 echo ""
-echo "📦 Copiando resultados do container para o host..."
+echo " Copiando resultados do container para o host..."
 mkdir -p ./results
 
 docker cp cliente:/app/results.csv ./results/results.csv 2>/dev/null && \
-    echo "✅ Arquivo results.csv copiado com sucesso!" || \
-    echo "⚠️  results.csv não encontrado no container."
+    echo " Arquivo results.csv copiado com sucesso!" || \
+    echo "  results.csv não encontrado no container."
 
 docker cp cliente:/app/graph.png ./results/graph.png 2>/dev/null && \
-    echo "✅ Arquivo graph.png copiado com sucesso!" || \
-    echo "⚠️  graph.png não encontrado no container."
+    echo " Arquivo graph.png copiado com sucesso!" || \
+    echo "  graph.png não encontrado no container."
 
 echo ""
 echo "=================================================="
@@ -91,11 +91,11 @@ echo "=================================================="
 if [ -f "./results/results.csv" ]; then
     cat ./results/results.csv
 else
-    echo "⚠️  Arquivo results.csv não encontrado."
+    echo "  Arquivo results.csv não encontrado."
 fi
 
 if [ -f "./results/graph.png" ]; then
-    echo "✅ Gráfico disponível em ./results/graph.png"
+    echo " Gráfico disponível em ./results/graph.png"
 fi
 
 echo ""
@@ -109,4 +109,4 @@ echo ""
 echo "Para parar tudo:"
 echo "  docker-compose down"
 echo ""
-echo "✅ Execução finalizada com sucesso!"
+echo " Execução finalizada com sucesso!"

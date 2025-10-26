@@ -14,7 +14,6 @@ services:
     volumes:
       - ./results:/app/results
 
-  # Servidor Concorrente
   servidor_concorrente:
     build: .
     container_name: servidor_concorrente
@@ -27,7 +26,6 @@ services:
     volumes:
       - ./results:/app/results
 
-  # Cliente com interface web
   cliente:
     build: .
     container_name: cliente
@@ -41,7 +39,7 @@ services:
       - ./results:/app/results
       - ./index.html:/app/index.html
     ports:
-      - "8081:8081"   # Painel web acessível no host
+      - "8081:8081"   
     stdin_open: true
     tty: true
     command: python3 -m http.server 8081 --directory /app

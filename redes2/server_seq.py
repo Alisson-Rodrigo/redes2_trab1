@@ -1,12 +1,9 @@
 import hashlib
 import socket
 
-# ============================================
-# CONFIGURAÇÕES
-# ============================================
+
 HOST = "0.0.0.0"
 PORT = 80  
-# Matrícula e nome para o hash
 MATRICULA = "20219015499"
 NOME = "Alisson Rodrigo"
 
@@ -22,7 +19,6 @@ def extrair_headers(data):
     headers = {}
     lines = data.split('\r\n')
     
-    # Pula a primeira linha (request line)
     for line in lines[1:]:
         if not line or line == '\r\n':
             break
@@ -49,9 +45,7 @@ def validar_custom_id(headers, expected_id):
 CUSTOM_ID = gerar_custom_id(MATRICULA, NOME)
 print(f"[INFO] X-Custom-ID esperado: {CUSTOM_ID}")
 
-# ============================================
-# INICIALIZA O SERVIDOR SEQUENCIAL
-# ============================================
+
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
     server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     server.bind((HOST, PORT))
@@ -71,10 +65,8 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
 
             print(f"[REQUISIÇÃO RECEBIDA DE {addr}]")
 
-            # Identifica o método HTTP
             metodo = data.split(" ")[0].upper() if data else "UNKNOWN"
 
-            # Resposta para requisição OPTIONS (pré-flight CORS)
             if metodo == "OPTIONS":
                 resposta = (
                     "HTTP/1.1 204 No Content\r\n"
@@ -87,14 +79,12 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
                 print(f"[SERVIDOR] Resposta OPTIONS enviada para {addr}")
                 continue
 
-            # ✅ VALIDAÇÃO DO X-Custom-ID
             headers = extrair_headers(data)
             valido, mensagem = validar_custom_id(headers, CUSTOM_ID)
             
             print(f"[VALIDAÇÃO] {mensagem}")
             
             if not valido:
-                # Resposta 401 Unauthorized se X-Custom-ID inválido
                 corpo = f"Erro de autenticação: {mensagem}\n"
                 resposta = (
                     "HTTP/1.1 401 Unauthorized\r\n"
@@ -110,7 +100,6 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
                 print(f"[SERVIDOR] Resposta 401 enviada para {addr} - {mensagem}")
                 continue
 
-            # Corpo da resposta para requisições válidas
             if metodo == "GET":
                 corpo = f"Requisição GET recebida de {addr}\nX-Custom-ID validado com sucesso!\n"
             elif metodo == "POST":
@@ -122,7 +111,6 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
             else:
                 corpo = f"Método {metodo} não suportado.\n"
 
-            # Monta resposta HTTP 200 OK com cabeçalhos CORS
             resposta = (
                 "HTTP/1.1 200 OK\r\n"
                 "Content-Type: text/plain; charset=utf-8\r\n"
@@ -137,4 +125,4 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
             )
 
             conn.sendall(resposta.encode())
-            print(f"[SERVIDOR] Resposta 200 OK enviada para {addr} - Método: {metodo}")
+            print(f"[SERVIDOR] Resposta 200 OK enviada para {addr} - Método: {metodo}")SSS

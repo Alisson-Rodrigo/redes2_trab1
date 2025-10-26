@@ -7,22 +7,19 @@ import time
 import threading
 import subprocess
 
-# ==================================================
-# CONFIGURAÇÕES
-# ==================================================
+
 if len(sys.argv) < 3:
     print("Uso: python3 metrics.py <SERVER_IP> <TIPO_SERVIDOR> [NUM_TESTES]")
     sys.exit(1)
 
-SERVER_IP = sys.argv[1]  # ex: 54.99.0.10
+SERVER_IP = sys.argv[1]  
 PORT = 80 
-TIPO_SERVIDOR = sys.argv[2]  # "sequencial" ou "concorrente"
+TIPO_SERVIDOR = sys.argv[2] 
 NUM_TESTES = int(sys.argv[3]) if len(sys.argv) > 3 else 10
 RESULTS_FILE = "/app/results.csv"
 
 METODOS = ["GET", "POST", "PUT", "DELETE"]
 
-# Matrícula e Nome para gerar X-Custom-ID
 MATRICULA = "20219015499"
 NOME = "Alisson Rodrigo"
 
@@ -37,9 +34,6 @@ CUSTOM_ID = gerar_custom_id(MATRICULA, NOME)
 print(f"[INFO] X-Custom-ID gerado: {CUSTOM_ID}\n")
 
 
-# ==================================================
-# FUNÇÃO DE REQUISIÇÃO (mantida para compatibilidade)
-# ==================================================
 def medir_tempo_resposta(method):
     """Envia requisição HTTP e mede o tempo de resposta"""
     corpo = ""
@@ -85,9 +79,6 @@ def medir_tempo_resposta(method):
     return fim - inicio
 
 
-# ==================================================
-# TESTES PARA SERVIDOR SEQUENCIAL
-# ==================================================
 def testar_servidor_sequencial():
     """Testa servidor sequencial com requisições uma por vez"""
     print(f"[TESTES] Servidor SEQUENCIAL ({SERVER_IP})")
@@ -114,7 +105,6 @@ def testar_servidor_sequencial():
             print(f"   ⚠️  Nenhum teste bem-sucedido para {method}")
             continue
         
-        # Calcula estatísticas
         media = statistics.mean(tempos)
         desvio = statistics.stdev(tempos) if len(tempos) > 1 else 0.0
         throughput = len(tempos) / sum(tempos)
@@ -130,9 +120,6 @@ def testar_servidor_sequencial():
     return all_results
 
 
-# ==================================================
-# TESTES PARA SERVIDOR CONCORRENTE
-# ==================================================
 def testar_servidor_concorrente():
     """Testa servidor concorrente com requisições simultâneas"""
     print(f"[TESTES] Servidor CONCORRENTE ({SERVER_IP})")
@@ -140,7 +127,7 @@ def testar_servidor_concorrente():
     print("=" * 60)
     
     all_results = []
-    NUM_THREADS_CONCURRENT = 10  # Número de requisições simultâneas
+    NUM_THREADS_CONCURRENT = 10  
     
     for method in METODOS:
         print(f"\n👉 Método {method} (modo concorrente):")
@@ -148,7 +135,6 @@ def testar_servidor_concorrente():
         tempos_totais = []
         throughputs = []
         
-        # Executa NUM_TESTES vezes o teste de concorrência
         for teste in range(NUM_TESTES):
             tempos = []
             lock = threading.Lock()
@@ -159,18 +145,15 @@ def testar_servidor_concorrente():
                     with lock:
                         tempos.append(t)
             
-            # Cria threads
             threads = []
             for i in range(NUM_THREADS_CONCURRENT):
                 t = threading.Thread(target=fazer_requisicao, args=(i+1,))
                 threads.append(t)
             
-            # Inicia todas ao mesmo tempo
             inicio_total = time.time()
             for t in threads:
                 t.start()
             
-            # Aguarda todas finalizarem
             for t in threads:
                 t.join()
             
@@ -189,7 +172,6 @@ def testar_servidor_concorrente():
             print(f"   ⚠️  Nenhum teste bem-sucedido para {method}")
             continue
         
-        # Calcula estatísticas gerais
         media_tempo = statistics.mean(tempos_totais)
         desvio_tempo = statistics.stdev(tempos_totais) if len(tempos_totais) > 1 else 0.0
         throughput_medio = statistics.mean(throughputs)
@@ -200,16 +182,12 @@ def testar_servidor_concorrente():
         print(f"   • Throughput médio: {throughput_medio:.2f} req/s")
         print(f"   • Testes válidos: {len(tempos_totais)}/{NUM_TESTES}")
         
-        # Salva resultado (usa tempo médio por requisição)
         tempo_medio_por_req = media_tempo / NUM_THREADS_CONCURRENT
         all_results.append((TIPO_SERVIDOR, method, tempo_medio_por_req, desvio_tempo, throughput_medio))
     
     return all_results
 
 
-# ==================================================
-# EXECUÇÃO PRINCIPAL
-# ==================================================
 if TIPO_SERVIDOR == "sequencial":
     all_results = testar_servidor_sequencial()
 elif TIPO_SERVIDOR == "concorrente":
@@ -220,9 +198,6 @@ else:
     sys.exit(1)
 
 
-# ==================================================
-# SALVA RESULTADOS NO CSV
-# ==================================================
 header = ["tipo_servidor", "metodo", "media", "desvio", "throughput"]
 
 try:

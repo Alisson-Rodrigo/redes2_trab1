@@ -4,15 +4,11 @@ import hashlib
 import threading
 import time
 
-# =============================
-# CONFIGURAÇÕES
-# =============================
-SERVER_IP = "54.99.0.10"  # IP do container servidor
+SERVER_IP = "54.99.0.10"  
 PORT = 80 
 MATRICULA = "20219015499"
 NOME = "Alisson Rodrigo"
 
-# Número de requisições simultâneas
 NUM_THREADS = int(sys.argv[1]) if len(sys.argv) > 1 else 5
 METHOD = sys.argv[2].upper() if len(sys.argv) > 2 else "GET"
 
@@ -25,7 +21,6 @@ def gerar_custom_id(matricula, nome):
 
 CUSTOM_ID = gerar_custom_id(MATRICULA, NOME)
 
-# Estatísticas compartilhadas
 resultados = []
 resultado_lock = threading.Lock()
 
@@ -33,13 +28,11 @@ resultado_lock = threading.Lock()
 def enviar_requisicao(thread_id):
     """Envia uma requisição HTTP ao servidor"""
     try:
-        # Corpo da requisição
         if METHOD in ["POST", "PUT"]:
             body = f'{{"mensagem": "Thread {thread_id} - Teste {METHOD}"}}'
         else:
             body = ""
 
-        # Monta requisição HTTP
         request = (
             f"{METHOD} / HTTP/1.1\r\n"
             f"Host: servidor_http\r\n"
@@ -58,7 +51,6 @@ def enviar_requisicao(thread_id):
         if body:
             request += body
 
-        # Envia requisição e mede tempo
         inicio = time.time()
         
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -71,13 +63,11 @@ def enviar_requisicao(thread_id):
         fim = time.time()
         tempo = fim - inicio
         
-        # Verifica status
         status_line = response.split('\r\n')[0]
         status = "✓ OK" if "200" in status_line else "✗ ERRO"
         
         print(f"[Thread-{thread_id:02d}] {status} | Tempo: {tempo:.4f}s | Status: {status_line}")
         
-        # Armazena resultado de forma thread-safe
         with resultado_lock:
             resultados.append({
                 'thread_id': thread_id,
@@ -94,10 +84,6 @@ def enviar_requisicao(thread_id):
                 'sucesso': False
             })
 
-
-# =============================
-# TESTE DE CARGA CONCORRENTE
-# =============================
 print("=" * 70)
 print(f"  TESTE DE CONCORRÊNCIA - Servidor {SERVER_IP}:{PORT}")
 print("=" * 70)
@@ -109,7 +95,6 @@ print()
 
 inicio_total = time.time()
 
-# Cria e inicia threads
 threads = []
 for i in range(NUM_THREADS):
     t = threading.Thread(target=enviar_requisicao, args=(i+1,))
@@ -117,20 +102,16 @@ for i in range(NUM_THREADS):
 
 print(f"🚀 Enviando {NUM_THREADS} requisições simultâneas...\n")
 
-# Inicia todas as threads ao mesmo tempo
 for t in threads:
     t.start()
 
-# Aguarda todas finalizarem
 for t in threads:
     t.join()
 
 fim_total = time.time()
 tempo_total = fim_total - inicio_total
 
-# =============================
-# ESTATÍSTICAS
-# =============================
+
 print()
 print("=" * 70)
 print("  ESTATÍSTICAS")
