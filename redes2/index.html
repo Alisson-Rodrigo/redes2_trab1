@@ -496,7 +496,6 @@
             statusText.textContent = text;
         }
 
-        // ✅ MUDANÇA CRÍTICA: Usar MD5 em vez de SHA-1
         function md5Hex(str) {
             return CryptoJS.MD5(str).toString();
         }
@@ -513,7 +512,6 @@
                 return;
             }
 
-            // ✅ Gera MD5 em vez de SHA-1
             const xcid = md5Hex(`${matricula} ${nome}`);
             const url = SERVERS[serverType];
             const serverName = serverType === 'seq' ? 'Sequencial' : 'Concorrente';
