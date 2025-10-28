@@ -52,13 +52,13 @@ echo ''
 echo '=================================================='
 echo '   TESTANDO SERVIDOR SEQUENCIAL (54.99.0.10)'
 echo '=================================================='
-python3 /app/metrics.py 54.99.0.10 sequencial 10
+python3 /app/metrics.py 54.99.0.10 sequencial 30
 
 echo ''
 echo '=================================================='
 echo '   TESTANDO SERVIDOR CONCORRENTE (54.99.0.11)'
 echo '=================================================='
-python3 /app/metrics.py 54.99.0.11 concorrente 10
+python3 /app/metrics.py 54.99.0.11 concorrente 30
 
 echo ''
 echo '=================================================='

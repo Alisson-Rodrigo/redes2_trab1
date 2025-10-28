@@ -5,7 +5,7 @@ import hashlib
 
 SERVER_IP = "54.99.0.10"  
 PORT = 80 
-MATRICULA = "20219015499"
+MATRICULA = "20219015426"
 NOME = "Alisson Rodrigo"
 
 def gerar_custom_id(matricula, nome):

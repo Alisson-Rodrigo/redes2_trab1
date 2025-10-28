@@ -6,7 +6,7 @@ import time
 
 SERVER_IP = "54.99.0.10"  
 PORT = 80 
-MATRICULA = "20219015499"
+MATRICULA = "20219015426"
 NOME = "Alisson Rodrigo"
 
 NUM_THREADS = int(sys.argv[1]) if len(sys.argv) > 1 else 5

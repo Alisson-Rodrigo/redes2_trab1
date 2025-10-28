@@ -4,7 +4,7 @@ import threading
 
 HOST = "0.0.0.0"
 PORT = 80 
-MATRICULA = "20219015499"
+MATRICULA = "20219015426"
 NOME = "Alisson Rodrigo"
 
 
@@ -129,7 +129,7 @@ def handle_client(conn, addr):
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
     server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     server.bind((HOST, PORT))
-    server.listen(5)
+    server.listen(10)
     print(f"[SERVIDOR] Concorrente escutando em {HOST}:{PORT}")
     print(f"[SERVIDOR] Pronto para aceitar conexões...\n")
 
