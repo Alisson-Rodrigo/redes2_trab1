@@ -3,7 +3,7 @@ import sys
 import hashlib
 
 
-SERVER_IP = "54.99.0.10"  
+SERVER_IP = "54.26.0.10"  
 PORT = 80 
 MATRICULA = "20219015426"
 NOME = "Alisson Rodrigo"
