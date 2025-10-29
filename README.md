@@ -10,6 +10,10 @@ O projeto implementa dois servidores HTTP:
 
 Ambos suportam os métodos GET, POST, PUT e DELETE com cabeçalhos CORS e Custom ID baseado em hash MD5.
 
+## Anexos
+Link do vídeo do youtube: https://youtu.be/3_sRayb6Wmo
+Link do github: https://github.com/Alisson-Rodrigo/redes2_trab1
+
 ## Requisitos
 
 - Docker Desktop instalado e rodando
