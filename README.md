@@ -44,9 +44,9 @@ Após execução:
 
 | Container | IP | Porta |
 |-----------|------------|-------|
-| servidor_sequencial | 54.99.0.10 | 8080 |
-| servidor_concorrente | 54.99.0.11 | 8082 |
-| cliente | 54.99.0.20 | 8081 |
+| servidor_sequencial | 54.26.0.10 | 80:8082 |
+| servidor_concorrente | 54.26.0.11 | 80:8080 |
+| cliente | 54.26.0.20 | 8081 |
 
 ## Resultados
 
@@ -68,16 +68,29 @@ docker-compose down
 ```
 
 Executar testes manualmente:
+Buildar o docker:
 ```bash
-docker exec cliente python3 /app/metrics.py 54.99.0.10 sequencial 10
-docker exec cliente python3 /app/metrics.py 54.99.0.11 concorrente 10
+docker-compose build
+```
+
+Subir o docker:
+```bash
+docker-compose up -d 
+```
+
+Rodar os testes:
+```bash
+docker exec cliente python3 /app/metrics.py 54.26.0.10 sequencial 10
+docker exec cliente python3 /app/metrics.py 54.26.0.11 concorrente 10
 ```
 
 ## Estrutura do Projeto
 
 ```
 .
+├── client_http.py          # Cliente do sequencial
 ├── server_seq.py           # Servidor sequencial
+├── client_concurrent.py    # Cliente do Concorrente
 ├── server_concurrent.py    # Servidor concorrente
 ├── metrics.py              # Script de testes de performance
 ├── plot_results.py         # Geração de gráficos
